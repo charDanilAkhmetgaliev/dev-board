@@ -15,3 +15,27 @@ export function getInitials(name: string): string {
 
   return `${nameArray[0][0] + nameArray[1][0]}`.toUpperCase();
 }
+
+export function updateUrlParam(
+  key: string,
+  value: string | null,
+  replace = false
+) {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params) {
+    if (value === null) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+
+    if (replace) {
+      window.history.replaceState(null, "", newUrl);
+    } else {
+      window.history.pushState(null, "", newUrl);
+    }
+  }
+}

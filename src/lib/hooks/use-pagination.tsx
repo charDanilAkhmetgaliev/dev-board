@@ -16,7 +16,7 @@ import {
   PaginationSParams,
   type SectionIsValid
 } from "types/pagination.ts";
-import useClientUrlParams from "./use-client-url-params.ts";
+import { updateUrlParam } from "../utils.ts";
 import usePaginationSectionReducer from "./use-pagination-section-reducer.ts";
 
 // Тип возвращаемого интерфейса
@@ -30,8 +30,6 @@ const usePagination = (
   itemsPerSection: number,
   urlSection?: number
 ): UsePaginationReturn => {
-  const { next, prev, set } = PaginationActions;
-
   // Общее количество секций
   const totalSections = useMemo(
     () => Math.ceil(totalItems / itemsPerSection),
@@ -48,9 +46,6 @@ const usePagination = (
   const { currentSection, handleSectionChange, controlSizeL, controlSizeR } =
     usePaginationSectionReducer(sectionIsValid, urlSection);
 
-  // Работа с URL-параметрами
-  const { updateUrlParam } = useClientUrlParams();
-
   // Список видимых номеров секций (между первой и последней)
   const visibleSections = useMemo(() => {
     const start = Math.max(2, currentSection - controlSizeL);
@@ -60,7 +55,7 @@ const usePagination = (
 
   useEffect(() => {
     updateUrlParam(PaginationSParams.section, String(currentSection), true);
-  }, [currentSection, updateUrlParam]);
+  }, [currentSection]);
 
   console.log("use-pagination");
   console.log(currentSection);
