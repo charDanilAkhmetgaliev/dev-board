@@ -1,0 +1,22 @@
+import PetsBoard from "components/modules/PetsBoard/PetsBoard.tsx";
+import type { PetsPageParams } from "types";
+import { PaginationSParams } from "types/pagination.ts";
+
+const PetsPage = async ({
+  searchParams
+}: {
+  searchParams: Promise<PetsPageParams>;
+}) => {
+  console.log("pets-page");
+  const params: PetsPageParams = await searchParams;
+  const urlSection: string | undefined =
+    params[PaginationSParams.section] || undefined;
+
+  return (
+    <>
+      <PetsBoard urlSection={urlSection} />
+    </>
+  );
+};
+
+export default PetsPage;
