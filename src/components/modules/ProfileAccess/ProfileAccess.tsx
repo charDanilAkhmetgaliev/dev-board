@@ -5,9 +5,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "components/ui/dropdown-menu";
-import { getInitials } from "lib/utils.ts";
 import type React from "react";
 import type { ProfileAccessProps } from "types";
+import { getInitials } from "../../../lib/utils/utils.ts";
 
 const ProfileAccess: React.FC<ProfileAccessProps> = ({
   username,

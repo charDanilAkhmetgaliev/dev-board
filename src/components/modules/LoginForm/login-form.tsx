@@ -8,8 +8,8 @@ import {
 } from "components/ui/card.tsx";
 import { Input } from "components/ui/input.tsx";
 import { Label } from "components/ui/label.tsx";
-import { cn } from "lib/utils";
 import type React from "react";
+import { cn } from "../../../lib/utils/utils.ts";
 
 export function LoginForm({
   className,
