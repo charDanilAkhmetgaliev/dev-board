@@ -1,4 +1,4 @@
-import { genId } from "../lib/utils.ts";
+import { genId } from "../lib/utils/utils.ts";
 import type { PetsProps } from "../types";
 
 export const PETS_DATA: PetsProps = [

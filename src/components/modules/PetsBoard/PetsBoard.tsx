@@ -1,7 +1,7 @@
 "use client";
 
 import {PETS_PER_SECTION} from "lib/constants.ts";
-import usePagination from "lib/hooks/use-pagination.tsx";
+import usePagination from "../../../lib/hooks/pagination/use-pagination.tsx";
 import {PETS_DATA} from "mock/pets.ts";
 
 const PetsBoard = ({urlSection}: { urlSection?: string }) => {

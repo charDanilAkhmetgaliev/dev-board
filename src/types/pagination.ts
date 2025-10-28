@@ -8,6 +8,11 @@ export enum PaginationActions {
     set = "set"
 }
 
+export enum PaginationControlTypes {
+    left = 'left',
+    right = 'right'
+}
+
 export type SectionIsValid = (section: number) => boolean;
 
 export type PaginationActionProps =
@@ -43,4 +48,19 @@ export interface PaginationLinkDataset extends DOMStringMap {
     slot?: "pagination-link";
     action?: PaginationActions;
     sectionValue?: string;
+}
+
+export type PaginationControlSizes = {
+    [K in PaginationControlTypes]: number
+}
+
+export type pgnControlActions = {
+    type: PaginationActions.next,
+    payload: { newSection: number }
+} | {
+    type: PaginationActions.prev,
+    payload: { newSection: number }
+} | {
+    type: PaginationActions.set,
+    payload: { newSection: number }
 }
