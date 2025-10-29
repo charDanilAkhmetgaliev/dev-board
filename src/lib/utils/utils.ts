@@ -12,7 +12,7 @@ export function genId(size: number = 4): string {
     return nanoid(size);
 }
 
-// возвращает первык символы первых двух слов в в верхнем регистре
+// возвращает первый символы первых двух слов в верхнем регистре
 export function getInitials(name: string): string {
     const nameArray = name.trim().split(" ");
 
