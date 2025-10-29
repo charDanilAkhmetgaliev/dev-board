@@ -1,66 +1,96 @@
-import {useReducer} from "react";
+import {useMemo, useReducer} from "react";
 import {
+    PaginationActionProps,
     PaginationActions,
-    PaginationControlSizes,
-    PaginationControlTypes,
-    pgnControlActions
+    PaginationNavigationSizes,
+    PaginationNavigationTypes
 } from "types/pagination.ts";
-import {PAGINATION_CONTROL_SIZE, PAGINATION_CONTROL_SIZE_ACTIVE} from "lib/constants.ts";
+import {
+    PAGINATION_VISUAL_SIZE_BASE,
+    PAGINATION_VISUAL_SIZE_ACTIVE
+} from "lib/constants.ts";
 
-const usePaginationControl = (totalSections: number) => {
-    const initialControlSizes: PaginationControlSizes = {
-        [PaginationControlTypes.left]: PAGINATION_CONTROL_SIZE,
-        [PaginationControlTypes.right]: PAGINATION_CONTROL_SIZE
-    };
+const setNextVisual = (sizes: PaginationNavigationSizes): PaginationNavigationSizes => ({
+    ...sizes,
+    [PaginationNavigationTypes.left]: PAGINATION_VISUAL_SIZE_BASE,
+    [PaginationNavigationTypes.right]: PAGINATION_VISUAL_SIZE_ACTIVE
+});
 
-    const [paginationControlSizes, paginationControlSizesDispatch] = useReducer(pgnControlSizeReducer, initialControlSizes);
+const setPrevVisual = (sizes: PaginationNavigationSizes): PaginationNavigationSizes => ({
+    ...sizes,
+    [PaginationNavigationTypes.left]: PAGINATION_VISUAL_SIZE_ACTIVE,
+    [PaginationNavigationTypes.right]: PAGINATION_VISUAL_SIZE_BASE
+});
 
-    function pgnControlSizeReducer(pgnControlSizes: PaginationControlSizes, pgnControlActions: pgnControlActions) {
-        const updatedPgnControlSizes: PaginationControlSizes = {...pgnControlSizes};
-        const {type, payload} = pgnControlActions;
+function paginationVisualsReducer(
+    state: PaginationNavigationSizes,
+    action: PaginationActionProps & { totalSections: number; currentSection: number }
+): PaginationNavigationSizes {
+    try {
+        const {type, payload, totalSections, currentSection} = action;
+        const newSection = payload.newSection;
 
-        const handlePgnControlNext = () => {
-            updatedPgnControlSizes[PaginationControlTypes.left] = PAGINATION_CONTROL_SIZE;
-            updatedPgnControlSizes[PaginationControlTypes.right] = PAGINATION_CONTROL_SIZE_ACTIVE;
+        if (!newSection) return state;
+
+        let updated = state;
+
+        if (newSection === 1) updated = setNextVisual(state);
+        else if (newSection === totalSections) updated = setPrevVisual(state);
+        else {
+            switch (type) {
+                case PaginationActions.next:
+                    updated = setNextVisual(state);
+                    break;
+                case PaginationActions.prev:
+                    updated = setPrevVisual(state);
+                    break;
+                case PaginationActions.set:
+                    updated =
+                        newSection > currentSection
+                            ? setNextVisual(state)
+                            : newSection < currentSection
+                                ? setPrevVisual(state)
+                                : state;
+                    break;
+            }
         }
 
-        const handlePgnControlPrev = () => {
-            updatedPgnControlSizes[PaginationControlTypes.left] = PAGINATION_CONTROL_SIZE_ACTIVE;
-            updatedPgnControlSizes[PaginationControlTypes.right] = PAGINATION_CONTROL_SIZE;
+        if (
+            updated[PaginationNavigationTypes.left] !== state[PaginationNavigationTypes.left] ||
+            updated[PaginationNavigationTypes.right] !== state[PaginationNavigationTypes.right]
+        ) {
+            return updated;
         }
 
-        const handlePgnControlSet = () => {
-            updatedPgnControlSizes[PaginationControlTypes.left] = PAGINATION_CONTROL_SIZE;
-            updatedPgnControlSizes[PaginationControlTypes.right] = PAGINATION_CONTROL_SIZE;
-        }
-
-        switch (payload.newSection) {
-            case 1:
-                handlePgnControlNext();
-                break;
-            case totalSections:
-                handlePgnControlPrev();
-                break;
-            default:
-                switch (type) {
-                    case PaginationActions.next:
-                        handlePgnControlNext();
-                        break;
-                    case PaginationActions.prev:
-                        handlePgnControlPrev();
-                        break;
-                    case PaginationActions.set:
-                        handlePgnControlSet();
-                        break;
-                }
-                break;
-        }
-
-
-        return updatedPgnControlSizes;
+        return state;
+    } catch (error) {
+        console.warn("Ошибка изменения состояния отображаемых страниц пагинации! Используются значения по умолчанию.", error);
+        return state;
     }
-
-    return {paginationControlSizes, handleControlChange: paginationControlSizesDispatch};
 }
 
-export default usePaginationControl;
+export default function usePaginationNavigationVisuals(
+    totalSections: number,
+    currentSection: number
+) {
+    const initialState: PaginationNavigationSizes = useMemo(
+        () => ({
+            [PaginationNavigationTypes.left]: PAGINATION_VISUAL_SIZE_BASE,
+            [PaginationNavigationTypes.right]: PAGINATION_VISUAL_SIZE_BASE
+        }),
+        []
+    );
+
+    const [pgnNavigationVisuals, dispatchBase] = useReducer(paginationVisualsReducer, initialState);
+
+    const pgnNavigationVisualsDispatch = useMemo(
+        () => (action: PaginationActionProps) =>
+            dispatchBase({...action, totalSections, currentSection}),
+        [totalSections, currentSection]
+    );
+
+    return useMemo(
+        () => ({pgnNavigationVisuals, pgnNavigationVisualsDispatch}),
+        [pgnNavigationVisuals, pgnNavigationVisualsDispatch]
+    );
+}

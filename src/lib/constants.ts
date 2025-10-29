@@ -4,8 +4,8 @@ import {genId} from "./utils/utils.ts";
 export const PETS_PER_SECTION = 10;
 
 export const PAGINATION_DEFAULT_SECTION = 1;
-export const PAGINATION_CONTROL_SIZE = 1;
-export const PAGINATION_CONTROL_SIZE_ACTIVE = 3;
+export const PAGINATION_VISUAL_SIZE_BASE = 1;
+export const PAGINATION_VISUAL_SIZE_ACTIVE = 3;
 
 export const ALL_PAGES: PagesProps = [
     {
