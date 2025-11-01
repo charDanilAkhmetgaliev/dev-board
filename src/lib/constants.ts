@@ -1,10 +1,10 @@
 import {PageAccess, type PagesProps} from "types/index.ts";
 import {genId} from "./utils/utils.ts";
 
-export const PETS_PER_SECTION = 10;
+export const PETS_PER_SECTION = 8;
 
 export const PAGINATION_DEFAULT_SECTION = 1;
-export const PAGINATION_VISUAL_SIZE_BASE = 1;
+export const PAGINATION_VISUAL_SIZE_BASE = 2;
 export const PAGINATION_VISUAL_SIZE_ACTIVE = 3;
 
 export const ALL_PAGES: PagesProps = [

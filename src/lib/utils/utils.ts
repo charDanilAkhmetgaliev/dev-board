@@ -12,9 +12,9 @@ export function genId(size: number = 4): string {
     return nanoid(size);
 }
 
-// возвращает первык символы первых двух слов в в верхнем регистре
+// возвращает первый символы первых двух слов в верхнем регистре
 export function getInitials(name: string): string {
-    const nameArray = name.trim().split(" ");
+    const nameArray: string[] = name.trim().split(" ");
 
     return `${nameArray[0][0] + nameArray[1][0]}`.toUpperCase();
 }
@@ -42,4 +42,11 @@ export function updateUrlParam(
             window.history.pushState(null, "", newUrl);
         }
     }
+}
+
+// возвращает данные из списка в диапазоне определенной текущей страницей
+export function getDataByCurrentSection<T>(dataList: T[], currentSection: number, dataPerSection: number): T[] {
+    const startIndex: number = (currentSection - 1) * dataPerSection;
+    const endIndex: number = startIndex + dataPerSection;
+    return dataList.slice(startIndex, endIndex);
 }

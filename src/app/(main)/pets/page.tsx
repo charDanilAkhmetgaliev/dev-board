@@ -1,22 +1,21 @@
-import PetsBoard from "components/modules/PetsBoard/PetsBoard.tsx";
-import type { PetsPageParams } from "types";
-import { PaginationSParams } from "types/pagination.ts";
+import GridBoard from "../../../components/modules/GridBoard/GridBoard.tsx";
+import {PetsPageParams, ShortPetProps} from "types";
+import {PaginationSParams} from "types/pagination.ts";
+import {PETS_DATA} from "mock/pets.ts";
+import {PETS_PER_SECTION} from "lib/constants.ts";
 
-const PetsPage = async ({
-  searchParams
-}: {
-  searchParams: Promise<PetsPageParams>;
+const PetsPage = async ({searchParams}: {
+    searchParams: Promise<PetsPageParams>;
 }) => {
-  console.log("pets-page");
-  const params: PetsPageParams = await searchParams;
-  const urlSection: string | undefined =
-    params[PaginationSParams.section] || undefined;
+    console.log("pets-page");
+    const params: PetsPageParams = await searchParams;
+    const urlSection: string | undefined = params[PaginationSParams.section] || undefined;
 
-  return (
-    <>
-      <PetsBoard urlSection={urlSection} />
-    </>
-  );
+    return (
+        <>
+            <GridBoard<ShortPetProps> dataList={PETS_DATA} dataPerSection={PETS_PER_SECTION} urlSection={urlSection}/>
+        </>
+    );
 };
 
 export default PetsPage;
